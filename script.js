@@ -2,13 +2,14 @@
 //0 - empty cell
 //1,..,6 - cell with neighbourhood bombs
 let cells = [];
-
 //-1 - marked cell
 //0 - close cell
 //1 - open cell
 let cellsStatus = [];
 
 const onLoad = () => {
+    preloadImages(['img/dirt.jpg', 'img/flag.png', 'img/grass.png',
+        'img/whenLose.jpg', 'img/whenWin.jpg', 'img/Безымянный.png']);
     printField();
     addEvents();
 }
@@ -19,6 +20,13 @@ const offContextMenu = () => {
 
 window.onload = onLoad;
 document.oncontextmenu = offContextMenu;
+
+const preloadImages = (images) => {
+    for (let img of images) {
+        let curImg = document.createElement('img');
+        curImg.src = img;
+    }
+}
 
 const addEvents = () => {
     document.getElementById('plusMines').addEventListener('click', plusMines);
@@ -106,7 +114,7 @@ const leftClick = (event) => {
     if (cellsStatus[x][y]) {
         return;
     }
-    event.target.style.backgroundImage = "url('img/darkDirt.jpg')"
+    event.target.style.backgroundImage = "url('img/dirt.jpg')"
     cellsStatus[x][y] = 1;
 }
 
@@ -116,7 +124,7 @@ const rightClick = (event) => {
     if (!cellsStatus[x][y]) {
         event.target.style.backgroundImage = "url('img/flag.png')";
         cellsStatus[x][y] = -1;
-    } else if (cellsStatus[x][y] === -1){
+    } else if (cellsStatus[x][y] === -1) {
         event.target.style.backgroundImage = "url('img/grass.png')";
         cellsStatus[x][y] = 0;
     }
