@@ -3,10 +3,11 @@ body {
     justify-content: center;
     box-sizing: border-box;
     user-select: none;
+    background: url("img/Безымянный.png");
 }
 
 .minesweeper {
-    width: 360px;
+    width: 600px;
     display: inline-flex;
     flex-direction: column;
 }
@@ -15,14 +16,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 1px;
-    background: #8d8989;
-    box-shadow: -1px -1px 3px #484848, 1px 1px 3px #484848;
+    border-radius: 3px;
+    box-shadow: -2px -2px 6px #484848, 2px 2px 6px #484848;
     font-family: sans-serif;
+    background: #8d8989;
 }
 
 .gameDataElement {
-    padding: 5px;
+    font-size: 33px;
+    height: 40px;
     border-radius: 6px;
     background: #aeb4be;
     margin: 10px;
@@ -30,39 +32,37 @@ body {
 }
 
 .changeAmountOfMines {
-    font-size: 25px;
+    height: 40px;
     padding: 5px 15px 5px 15px;
     border-radius: 5px;
-    border: 2px solid gray;
+    border: 3px solid gray;
+    background: #aeb4be;
+    font-size: 30px;
 }
 
-.minusMines {
-    background-color: red;
-}
-
-.plusMines {
-    background-color: green;
+.amountOfMines {
+    display: flex;
+    justify-content: center;
+    width: 30px;
 }
 
 .field {
+    width: 600px;
     display: flex;
     flex-wrap: wrap;
-    /*border-right: 5px solid grey;
-    border-bottom: 5px solid grey;
-    border-left: 5px solid grey;*/
     background-size: contain;
     background-repeat: repeat;
 }
 
 .cell {
-    width: 32px;
-    height: 32px;
+    width: 54px;
+    height: 54px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    border: 2px solid black;
+    border: 3px solid black;
     background-image: url("img/grass.png");
     background-size: contain;
-    box-shadow: -1px -1px 3px #8d8989;
+    box-shadow: -2px -2px 4px #8d8989;
 }
