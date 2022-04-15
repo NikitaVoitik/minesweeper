@@ -5,15 +5,14 @@
 }
 
 body {
+    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
     user-select: none;
     align-items: center;
-    background-position-y: center;
-    background: url("img/Безымянный.png") no-repeat;
-    background-size: auto;
+    background-size: cover;
 }
 
 .minesweeper {
@@ -27,6 +26,7 @@ body {
     justify-content: center;
     align-items: center;
     font-family: sans-serif;
+    padding-bottom: 10px;
 }
 
 .gameDataElement {
@@ -41,6 +41,7 @@ body {
 }
 
 .amountOfMines {
+    width: 60px;
     display: flex;
     justify-content: center;
     margin: 0;
@@ -61,8 +62,12 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    border: 3px solid black;
-    background-image: url("img/grass.png");
+    vertical-align: center;
+    font-family: 'Ghoul', serif;
+    color: #dc143c;
+    font-size: 0;
+    background-image: url("img/closeCell.png");
     background-size: contain;
+    border: 3px solid black;
     box-shadow: -2px -2px 4px #8d8989;
 }
