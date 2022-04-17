@@ -8,9 +8,9 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     box-sizing: border-box;
     user-select: none;
-    align-items: center;
     background: no-repeat bottom fixed;
     background-size: cover;
 }

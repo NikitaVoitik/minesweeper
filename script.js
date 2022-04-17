@@ -256,15 +256,9 @@ const rightClick = (event) => {
     if (!cellsStatus[x][y]) {
         event.target.style.backgroundImage = `url("${preloadObjects['flag'].src}")`;
         cellsStatus[x][y] = -1;
-        if (cells[x][y] === -1) {
-            remainingMines--;
-        }
     } else if (cellsStatus[x][y] === -1) {
         event.target.style.backgroundImage = `url("${preloadObjects['closeCell'].src}")`;
         cellsStatus[x][y] = 0;
-        if (cells[x][y] === -1) {
-            remainingMines++;
-        }
     }
     if (openCells === 100 - +document.getElementById('amountOfMines').innerHTML){
         whenWin();
