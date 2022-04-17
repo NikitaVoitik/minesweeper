@@ -6,7 +6,7 @@ let cells = [];
 //0 - close cell
 //1 - open cell
 let cellsStatus = [];
-const images = {
+const preloadObjects = {
     'flag': document.createElement('img'),
     'openCell': document.createElement('img'),
     'closeCell': document.createElement('img'),
@@ -15,11 +15,10 @@ const images = {
     'background': document.createElement('img'),
 }
 let firstClick = true;
-let remainingMines;
-let numberOfFlags = 0;
+let openCells = 0;
 
-for (let prop in images) {
-    images[prop].src = "img/" + prop + ".png";
+for (let prop in preloadObjects) {
+    preloadObjects[prop].src = "img/" + prop + ".png";
 }
 
 //arrays declaration
@@ -32,11 +31,8 @@ for (let i = 0; i < 12; i++) {
     }
 }
 
-window.onbeforeunload = () => {
-    console.log('Leave');
-}
 window.onload = () => {
-    document.getElementById('body').style.backgroundImage = `url("${images['background'].src}")`;
+    document.getElementById('body').style.backgroundImage = `url("${preloadObjects['background'].src}")`;
     printField();
     document.getElementById('plusMines').addEventListener('click', changeAmountOfMines);
     document.getElementById('minusMines').addEventListener('click', changeAmountOfMines);
@@ -65,13 +61,13 @@ const changeAmountOfMines = (event) => {
     const amountMines = document.getElementById('amountOfMines');
     printField();
     if (event.target.id === 'plusMines') {
-        if (amountMines.innerHTML === '40') {
-            amountMines.innerHTML = '0';
+        if (amountMines.innerHTML === '30') {
+            amountMines.innerHTML = '4';
         }
         amountMines.innerHTML = +amountMines.innerHTML + 1;
     } else if (event.target.id === 'minusMines') {
-        if (amountMines.innerHTML === '1') {
-            amountMines.innerHTML = '41';
+        if (amountMines.innerHTML === '5') {
+            amountMines.innerHTML = '31';
         }
         amountMines.innerHTML = +amountMines.innerHTML - 1;
     }
@@ -89,7 +85,7 @@ const bombSiteCheck = (x, y) => {
     let kolNeighbourhoodBombs = 0;
     for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
-            if (cells[x + i][y + j] === -1){
+            if (cells[x + i][y + j] === -1) {
                 kolNeighbourhoodBombs++;
             }
         }
@@ -145,17 +141,36 @@ const openAllCells = () => {
         for (let y = 1; y < 11; y++) {
             const cell = document.getElementById(`${(x - 1) * 10 + y}`);
             if (cells[x][y] === -1) {
-                cell.style.backgroundImage = `url("${images['bomb'].src}")`;
+                cell.style.backgroundImage = `url("${preloadObjects['bomb'].src}")`;
             } else if (cellsStatus[x][y] !== -1) {
-                if (cells[x][y]) {
-                    cell.style.fontSize = '50px';
-                    cell.style.backgroundImage = `url("${images['openCell'].src}")`;
-                } else {
-                    cell.style.backgroundImage = `url("${images['ccg'].src}")`;
-                }
+                openCell(x, y, cell);
             }
         }
     }
+}
+
+const newGame = () => {
+    document.getElementById('video').onended =
+        document.getElementById('video').onclick = (event) => {
+            event.target.outerHTML = null;
+        }
+    document.onkeyup = () => {
+        document.getElementById('video').outerHTML = null;
+    }
+    document.getElementById('plusMines').hidden = false;
+    document.getElementById('minusMines').hidden = false;
+    openAllCells();
+    firstClick = true;
+}
+
+const whenLose = () => {
+    document.getElementById('soundtrack').outerHTML = null;
+    document.getElementById('body').insertAdjacentHTML('afterbegin', `
+    <div class="modalWindow" id="modalWindow">
+        <video src="img/lose.mp4" autoplay id="video"></video>
+    </div>
+    `);
+    newGame();
 }
 
 const leftClick = (event) => {
@@ -164,21 +179,24 @@ const leftClick = (event) => {
     if (firstClick) {
         document.getElementById('plusMines').hidden = true;
         document.getElementById('minusMines').hidden = true;
-        remainingMines = +document.getElementById('amountOfMines').innerHTML;
         firstClick = false;
-        numberOfFlags = 0;
+        openCells = 0;
         generateField(x, y);
         printField();
+        document.getElementById('body').insertAdjacentHTML('afterbegin', `
+        <audio autoplay loop hidden id="soundtrack">
+            <source src="sound/soundtrack.mp3" type="audio/mpeg">
+        </audio>
+        `);
     }
     if (cells[x][y] === -1) {
-        alert('Lose');
-        document.getElementById('plusMines').hidden = false;
-        document.getElementById('minusMines').hidden = false;
-        openAllCells();
-        firstClick = true;
+        whenLose();
         return;
     }
-    openCells(x, y, true);
+    openNeighbouringCells(x, y, true);
+    if (openCells === 100 - +document.getElementById('amountOfMines').innerHTML){
+        whenWin();
+    }
 }
 
 const neighbourWithoutMine = (x, y) => {
@@ -192,7 +210,17 @@ const neighbourWithoutMine = (x, y) => {
     return false;
 }
 
-const openCells = (x, y, firstCell) => {
+const openCell = (x, y, cell) => {
+    openCells++;
+    if (cells[x][y]) {
+        cell.style.fontSize = '50px';
+        cell.style.backgroundImage = `url("${preloadObjects['openCell'].src}")`;
+    } else {
+        cell.style.backgroundImage = `url("${preloadObjects['ccg'].src}")`;
+    }
+}
+
+const openNeighbouringCells = (x, y, firstCell) => {
     if (x < 1 || x > 10 || y < 1 || y > 10 || cellsStatus[x][y] !== 0 || cells[x][y] === -1) {
         return;
     }
@@ -201,18 +229,22 @@ const openCells = (x, y, firstCell) => {
     }
     firstCell = false;
     cellsStatus[x][y] = 1;
-    const cell = document.getElementById((x - 1) * 10 + y);
-    if (cells[x][y]) {
-        cell.style.fontSize = '50px';
-        cell.style.backgroundImage = `url("${images['openCell'].src}")`;
-    } else {
-        cell.style.backgroundImage = `url("${images['ccg'].src}")`;
-    }
+    openCell(x, y, document.getElementById((x - 1) * 10 + y));
     for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
-            openCells(x + i, y + j, firstCell);
+            openNeighbouringCells(x + i, y + j, firstCell);
         }
     }
+}
+
+const whenWin = () => {
+    document.getElementById('soundtrack').outerHTML = null;
+    document.getElementById('body').insertAdjacentHTML('afterbegin', `
+    <div class="modalWindow" id="modalWindow">
+        <video src="img/win.mp4" autoplay id="video"></video>
+    </div>
+    `);
+    newGame();
 }
 
 const rightClick = (event) => {
@@ -222,27 +254,19 @@ const rightClick = (event) => {
     const x = Math.floor((+event.target.id - 1) / 10) + 1;
     const y = +event.target.id - (x - 1) * 10;
     if (!cellsStatus[x][y]) {
-        event.target.style.backgroundImage = `url("${images['flag'].src}")`;
+        event.target.style.backgroundImage = `url("${preloadObjects['flag'].src}")`;
         cellsStatus[x][y] = -1;
-        numberOfFlags++;
         if (cells[x][y] === -1) {
             remainingMines--;
         }
     } else if (cellsStatus[x][y] === -1) {
-        event.target.style.backgroundImage = `url("${images['closeCell'].src}")`;
+        event.target.style.backgroundImage = `url("${preloadObjects['closeCell'].src}")`;
         cellsStatus[x][y] = 0;
-        numberOfFlags--;
         if (cells[x][y] === -1) {
             remainingMines++;
         }
     }
-    console.log(remainingMines, numberOfFlags);
-    if (!remainingMines && numberOfFlags === +document.getElementById('amountOfMines').innerHTML) {
-        alert('You win');
-        document.getElementById('plusMines').hidden = false;
-        document.getElementById('minusMines').hidden = false;
-        openAllCells();
-        firstClick = true;
+    if (openCells === 100 - +document.getElementById('amountOfMines').innerHTML){
+        whenWin();
     }
-
 }

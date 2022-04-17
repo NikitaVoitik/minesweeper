@@ -5,13 +5,13 @@
 }
 
 body {
-    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
     user-select: none;
     align-items: center;
+    background: no-repeat bottom fixed;
     background-size: cover;
 }
 
@@ -53,6 +53,7 @@ body {
     flex-wrap: wrap;
     background-size: contain;
     background-repeat: repeat;
+    padding: 0 0 10px 0;
 }
 
 .cell {
@@ -70,4 +71,14 @@ body {
     background-size: contain;
     border: 3px solid black;
     box-shadow: -2px -2px 4px #8d8989;
+}
+
+.modalWindow {
+    z-index: 1;
+    position: absolute;
+}
+
+video{
+    width: 1200px;
+    border-radius: 50px;
 }
