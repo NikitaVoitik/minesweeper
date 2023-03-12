@@ -82,3 +82,20 @@ video{
     width: 1200px;
     border-radius: 50px;
 }
+
+.volume{
+    position: absolute;
+    left: 10px;
+    bottom: 5px;
+}
+
+.onButton{
+    width: 100px;
+    display: none;
+}
+
+.offButton{
+    width: 75px;
+    margin-left: 11px;
+    margin-bottom: 10px;
+}

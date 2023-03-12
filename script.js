@@ -16,6 +16,7 @@ const preloadObjects = {
 }
 let firstClick = true;
 let openCells = 0;
+let muted = true;
 
 for (let prop in preloadObjects) {
     preloadObjects[prop].src = "img/" + prop + ".png";
@@ -36,10 +37,26 @@ window.onload = () => {
     printField();
     document.getElementById('plusMines').addEventListener('click', changeAmountOfMines);
     document.getElementById('minusMines').addEventListener('click', changeAmountOfMines);
+    document.getElementById('volume').addEventListener('click', volumeControl);
     remainingMines = document.getElementById('amountOfMines').innerHTML;
 }
+
 document.oncontextmenu = () => {
     return false;
+}
+
+const volumeControl = () => {
+    muted = !muted;
+    console.log(muted)
+    let off = document.getElementById('offButton');
+    let on = document.getElementById('onButton')
+    if (muted){
+        off.style.display = "block";
+        on.style.display = "none"
+    } else {
+        off.style.display = "none";
+        on.style.display = "block"
+    }
 }
 
 const printField = () => {
@@ -165,9 +182,13 @@ const newGame = () => {
 
 const whenLose = () => {
     document.getElementById('soundtrack').outerHTML = null;
+    mute = ""
+    if (muted){
+        mute = "muted"
+    }
     document.getElementById('body').insertAdjacentHTML('afterbegin', `
     <div class="modalWindow" id="modalWindow">
-        <video src="img/lose.mp4" autoplay id="video"></video>
+        <video src="img/lose.mp4" autoplay id="video" ${mute}></video>
     </div>
     `);
     newGame();
@@ -183,8 +204,12 @@ const leftClick = (event) => {
         openCells = 0;
         generateField(x, y);
         printField();
+        mute = ""
+        if (muted){
+            mute = "muted"
+        }
         document.getElementById('body').insertAdjacentHTML('afterbegin', `
-        <audio autoplay loop hidden id="soundtrack">
+        <audio autoplay loop hidden id="soundtrack" ${mute}>
             <source src="sound/soundtrack.mp3" type="audio/mpeg">
         </audio>
         `);
@@ -239,9 +264,13 @@ const openNeighbouringCells = (x, y, firstCell) => {
 
 const whenWin = () => {
     document.getElementById('soundtrack').outerHTML = null;
+    mute = ""
+    if (muted){
+        mute = "muted"
+    }
     document.getElementById('body').insertAdjacentHTML('afterbegin', `
     <div class="modalWindow" id="modalWindow">
-        <video src="img/win.mp4" autoplay id="video"></video>
+        <video src="img/win.mp4" autoplay id="video" ${mute}></video>
     </div>
     `);
     newGame();
